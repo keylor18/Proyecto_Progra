@@ -1,0 +1,28 @@
+# Compilación
+build/
+dist/
+target/
+out/
+*.class
+*.jar
+*.war
+
+# NetBeans
+nbproject/private/
+nbproject/private/private.properties
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# Temporales y logs
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
