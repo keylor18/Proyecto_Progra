@@ -84,6 +84,10 @@ git lfs pull
 
 Si el repositorio ya estaba clonado, basta con ejecutar `git lfs install` y `git lfs pull` desde su raíz.
 
+Ejecute `Main.java` con el directorio de trabajo apuntando a la raíz del proyecto (`Proyecto_Progra/`), para que las rutas relativas `data/PADRON.txt` y `data/distelec.txt` se resuelvan correctamente.
+
+En VS Code, abra la carpeta raíz `Proyecto_Progra/` (no `src/`) y use **Run** sobre `main`. Sin un `cwd` explícito en `launch.json`, el depurador Java usa la raíz del workspace.
+
 Compilar:
 
 ```powershell
