@@ -5,10 +5,9 @@ Proyecto de Programación III, Etapa 1. Implementa un servidor Java que consulta
 ## Requisitos
 
 - Java 25
+- Git LFS
 - PowerShell en Windows para los comandos documentados
-- Archivos de datos reales:
-  - `PADRON.txt`
-  - `distelec.txt`
+- Los archivos de datos reales están incluidos en `data/`
 
 ## Arquitectura
 
@@ -26,6 +25,8 @@ Flujo:
 `TCP/HTTP -> ServicioPadron -> RepositorioPadron -> PADRON.txt -> RepositorioDistritos -> distelec.txt -> PersonaDTO -> JSON`
 
 ## Archivos de datos
+
+Los archivos se versionan dentro del proyecto para que todos los colaboradores utilicen las mismas rutas. Debido a su tamaño, `data/PADRON.txt` se almacena con Git LFS; `data/distelec.txt` se almacena directamente en Git.
 
 Análisis real realizado:
 
@@ -59,8 +60,8 @@ Valores por defecto en este proyecto:
 
 - TCP: `5000`
 - HTTP: `8080`
-- `padron.path=../Llave/PADRON.txt`
-- `distelec.path=../Llave/distelec.txt`
+- `padron.path=data/PADRON.txt`
+- `distelec.path=data/distelec.txt`
 
 También se pueden sobreescribir con propiedades del sistema o variables de entorno.
 
@@ -71,6 +72,17 @@ También se pueden sobreescribir con propiedades del sistema o variables de ento
 `distelec.txt` sí se carga una sola vez en un `Map` inmutable porque es pequeño.
 
 ## Ejecución
+
+Preparar una clonación nueva:
+
+```powershell
+git lfs install
+git clone https://github.com/keylor18/Proyecto_Progra.git
+Set-Location Proyecto_Progra
+git lfs pull
+```
+
+Si el repositorio ya estaba clonado, basta con ejecutar `git lfs install` y `git lfs pull` desde su raíz.
 
 Compilar:
 
@@ -161,6 +173,9 @@ Se controlan, entre otros, estos casos:
 ## Estructura del proyecto
 
 ```text
+data/
+  PADRON.txt
+  distelec.txt
 src/
   padron/
     Main.java

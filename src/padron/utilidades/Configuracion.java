@@ -111,9 +111,8 @@ public class Configuracion {
             candidatos.add(resolverContraDirectorioTrabajo(valor.trim()));
         }
 
-        candidatos.add(resolverContraDirectorioTrabajo(nombreArchivo));
         candidatos.add(resolverContraDirectorioTrabajo("data/" + nombreArchivo));
-        candidatos.add(resolverContraDirectorioTrabajo("../Llave/" + nombreArchivo));
+        candidatos.add(resolverContraDirectorioTrabajo(nombreArchivo));
 
         for (Path candidato : candidatos) {
             if (Files.exists(candidato) && Files.isRegularFile(candidato)) {
