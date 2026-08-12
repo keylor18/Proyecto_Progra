@@ -20,9 +20,9 @@ public final class PreparadorDatos {
     private static final Logger LOGGER = Logger.getLogger(PreparadorDatos.class.getName());
     private static final String NOMBRE_PADRON = "PADRON.txt";
     private static final String NOMBRE_COMPRIMIDO = "PADRON.zip";
-    private static final long TAMANO_PADRON = 442_646_792L;
+    private static final long TAMANO_PADRON = 443_128_232L;
     private static final String SHA_256_PADRON
-            = "3836a97d1b62e63d58b1779ddfbdefbe83d8351d8591bb40dc23285e5e79114a";
+            = "d1d3d2bcfe0729251667bdefb2c0c4ef1a70a9de3f34a39e39e20cde0ebe81c0";
 
     private PreparadorDatos() {
     }

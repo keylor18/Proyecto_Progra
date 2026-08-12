@@ -30,8 +30,8 @@ Los archivos se versionan dentro del proyecto para que todos los colaboradores u
 Análisis real realizado:
 
 - `PADRON.txt`
-  - Tamaño analizado: 442,646,792 bytes
-  - Registros: 3,751,244
+  - Tamaño analizado: 443,128,232 bytes
+  - Registros: 3,755,324
   - Ordenado por cédula
   - Longitud fija: 118 bytes por registro con `CRLF`
   - Formato real:
@@ -79,7 +79,11 @@ git clone https://github.com/keylor18/Proyecto_Progra.git
 Set-Location Proyecto_Progra
 ```
 
-La primera ejecución crea `data/PADRON.txt` desde `data/PADRON.zip`. Se requieren aproximadamente 450 MB adicionales de espacio libre para el archivo extraído.
+La primera ejecución crea `data/PADRON.txt` desde `data/PADRON.zip`, valida su integridad y luego inicia los servidores. Se requieren aproximadamente 450 MB adicionales de espacio libre para el archivo extraído.
+
+La aplicación localiza `config.properties` y la carpeta `data/` desde la raíz del proyecto, aunque Java se inicie desde una subcarpeta.
+
+En VS Code, abra la carpeta raíz `Proyecto_Progra/` (no `src/`) y use **Run** sobre `main`. Sin un `cwd` explícito en `launch.json`, el depurador Java usa la raíz del workspace.
 
 Compilar:
 
