@@ -23,6 +23,9 @@ nbproject/private/private.properties
 *.swp
 *.swo
 
+# Datos generados al iniciar la aplicación
+/data/PADRON.txt
+
 # Sistema operativo
 .DS_Store
 Thumbs.db

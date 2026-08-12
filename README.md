@@ -5,7 +5,6 @@ Proyecto de Programación III, Etapa 1. Implementa un servidor Java que consulta
 ## Requisitos
 
 - Java 25
-- Git LFS
 - PowerShell en Windows para los comandos documentados
 - Los archivos de datos reales están incluidos en `data/`
 
@@ -26,13 +25,13 @@ Flujo:
 
 ## Archivos de datos
 
-Los archivos se versionan dentro del proyecto para que todos los colaboradores utilicen las mismas rutas. Debido a su tamaño, `data/PADRON.txt` se almacena con Git LFS; `data/distelec.txt` se almacena directamente en Git.
+Los archivos se versionan dentro del proyecto para que todos los colaboradores utilicen las mismas rutas. `PADRON.txt` se distribuye comprimido como `data/PADRON.zip` y la aplicación lo extrae automáticamente en la primera ejecución. No es necesario instalar Git LFS ni configurar rutas externas.
 
 Análisis real realizado:
 
 - `PADRON.txt`
-  - Tamaño analizado: 442,646,792 bytes
-  - Registros: 3,751,244
+  - Tamaño analizado: 443,128,232 bytes
+  - Registros: 3,755,324
   - Ordenado por cédula
   - Longitud fija: 118 bytes por registro con `CRLF`
   - Formato real:
@@ -76,15 +75,13 @@ También se pueden sobreescribir con propiedades del sistema o variables de ento
 Preparar una clonación nueva:
 
 ```powershell
-git lfs install
 git clone https://github.com/keylor18/Proyecto_Progra.git
 Set-Location Proyecto_Progra
-git lfs pull
 ```
 
-Si el repositorio ya estaba clonado, basta con ejecutar `git lfs install` y `git lfs pull` desde su raíz.
+La primera ejecución crea `data/PADRON.txt` desde `data/PADRON.zip`, valida su integridad y luego inicia los servidores. Se requieren aproximadamente 450 MB adicionales de espacio libre para el archivo extraído.
 
-Ejecute `Main.java` con el directorio de trabajo apuntando a la raíz del proyecto (`Proyecto_Progra/`), para que las rutas relativas `data/PADRON.txt` y `data/distelec.txt` se resuelvan correctamente.
+La aplicación localiza `config.properties` y la carpeta `data/` desde la raíz del proyecto, aunque Java se inicie desde una subcarpeta.
 
 En VS Code, abra la carpeta raíz `Proyecto_Progra/` (no `src/`) y use **Run** sobre `main`. Sin un `cwd` explícito en `launch.json`, el depurador Java usa la raíz del workspace.
 
@@ -178,7 +175,8 @@ Se controlan, entre otros, estos casos:
 
 ```text
 data/
-  PADRON.txt
+  PADRON.zip
+  PADRON.txt (generado automáticamente)
   distelec.txt
 src/
   padron/

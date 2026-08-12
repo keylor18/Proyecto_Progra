@@ -2,10 +2,12 @@ package padron.utilidades;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +38,8 @@ public class Configuracion {
 
     public static Configuracion cargar() throws DatosPadronException {
         Properties propiedades = new Properties();
-        Path archivoConfiguracion = Paths.get(ARCHIVO_CONFIGURACION).toAbsolutePath().normalize();
+        Path archivoConfiguracion = localizarArchivoConfiguracion();
+        Path directorioProyecto = archivoConfiguracion.getParent();
 
         if (Files.exists(archivoConfiguracion)) {
             try (Reader lector = Files.newBufferedReader(archivoConfiguracion, StandardCharsets.UTF_8)) {
@@ -49,8 +52,10 @@ public class Configuracion {
 
         int puertoTcp = leerPuerto("tcp.port", "TCP_PORT", propiedades, PUERTO_TCP_PREDETERMINADO);
         int puertoHttp = leerPuerto("http.port", "HTTP_PORT", propiedades, PUERTO_HTTP_PREDETERMINADO);
-        Path rutaPadron = resolverRutaDatos("padron.path", "PADRON_PATH", "PADRON.txt", propiedades);
-        Path rutaDistritos = resolverRutaDatos("distelec.path", "DISTELEC_PATH", "distelec.txt", propiedades);
+        Path rutaPadron = resolverRutaDatos(
+                "padron.path", "PADRON_PATH", "PADRON.txt", propiedades, directorioProyecto);
+        Path rutaDistritos = resolverRutaDatos(
+                "distelec.path", "DISTELEC_PATH", "distelec.txt", propiedades, directorioProyecto);
 
         return new Configuracion(puertoTcp, puertoHttp, rutaPadron, rutaDistritos);
     }
@@ -98,25 +103,34 @@ public class Configuracion {
     }
 
     private static Path resolverRutaDatos(String propiedad, String variableEntorno, String nombreArchivo,
-            Properties propiedades) throws DatosPadronException {
+            Properties propiedades, Path directorioProyecto) throws DatosPadronException {
         List<Path> candidatos = new ArrayList<>();
         String valor = System.getProperty(propiedad);
-        if (valor == null || valor.isBlank()) {
-            valor = System.getenv(variableEntorno);
-        }
-        if (valor == null || valor.isBlank()) {
-            valor = propiedades.getProperty(propiedad);
-        }
         if (valor != null && !valor.isBlank()) {
             candidatos.add(resolverContraDirectorioTrabajo(valor.trim()));
+        } else {
+            valor = System.getenv(variableEntorno);
+            if (valor != null && !valor.isBlank()) {
+                candidatos.add(resolverContraDirectorioTrabajo(valor.trim()));
+            } else {
+                valor = propiedades.getProperty(propiedad);
+                if (valor != null && !valor.isBlank()) {
+                    candidatos.add(resolverContraDirectorio(valor.trim(), directorioProyecto));
+                }
+            }
         }
 
+        candidatos.add(directorioProyecto.resolve("data").resolve(nombreArchivo).normalize());
+        candidatos.add(directorioProyecto.resolve(nombreArchivo).normalize());
         candidatos.add(resolverContraDirectorioTrabajo("data/" + nombreArchivo));
         candidatos.add(resolverContraDirectorioTrabajo(nombreArchivo));
 
         for (Path candidato : candidatos) {
-            if (Files.exists(candidato) && Files.isRegularFile(candidato)) {
-                return candidato.toAbsolutePath().normalize();
+            Path rutaPreparada = "PADRON.txt".equals(nombreArchivo)
+                    ? PreparadorDatos.asegurarPadron(candidato)
+                    : candidato;
+            if (Files.exists(rutaPreparada) && Files.isRegularFile(rutaPreparada)) {
+                return rutaPreparada.toAbsolutePath().normalize();
             }
         }
 
@@ -125,11 +139,51 @@ public class Configuracion {
     }
 
     private static Path resolverContraDirectorioTrabajo(String ruta) {
+        return resolverContraDirectorio(ruta, Paths.get("").toAbsolutePath().normalize());
+    }
+
+    private static Path resolverContraDirectorio(String ruta, Path directorioBase) {
         Path path = Paths.get(ruta);
         if (path.isAbsolute()) {
             return path.normalize();
         }
-        return Paths.get("").toAbsolutePath().resolve(path).normalize();
+        return directorioBase.resolve(path).normalize();
+    }
+
+    private static Path localizarArchivoConfiguracion() {
+        Path directorioTrabajo = Paths.get("").toAbsolutePath().normalize();
+        Path encontrado = buscarEnDirectoriosPadre(directorioTrabajo);
+        if (encontrado != null) {
+            return encontrado;
+        }
+
+        try {
+            CodeSource origenCodigo = Configuracion.class.getProtectionDomain().getCodeSource();
+            if (origenCodigo != null && origenCodigo.getLocation() != null) {
+                Path ubicacionCodigo = Paths.get(origenCodigo.getLocation().toURI());
+                Path inicio = Files.isDirectory(ubicacionCodigo) ? ubicacionCodigo : ubicacionCodigo.getParent();
+                encontrado = buscarEnDirectoriosPadre(inicio);
+                if (encontrado != null) {
+                    return encontrado;
+                }
+            }
+        } catch (URISyntaxException | SecurityException ex) {
+            // Se conserva el directorio de trabajo como último recurso.
+        }
+
+        return directorioTrabajo.resolve(ARCHIVO_CONFIGURACION);
+    }
+
+    private static Path buscarEnDirectoriosPadre(Path inicio) {
+        Path directorio = inicio;
+        while (directorio != null) {
+            Path candidato = directorio.resolve(ARCHIVO_CONFIGURACION).normalize();
+            if (Files.isRegularFile(candidato)) {
+                return candidato;
+            }
+            directorio = directorio.getParent();
+        }
+        return null;
     }
 
     private static void validarPuerto(String nombre, int puerto) {
