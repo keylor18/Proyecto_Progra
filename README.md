@@ -5,7 +5,6 @@ Proyecto de Programación III, Etapa 1. Implementa un servidor Java que consulta
 ## Requisitos
 
 - Java 25
-- Git LFS
 - PowerShell en Windows para los comandos documentados
 - Los archivos de datos reales están incluidos en `data/`
 
@@ -26,7 +25,7 @@ Flujo:
 
 ## Archivos de datos
 
-Los archivos se versionan dentro del proyecto para que todos los colaboradores utilicen las mismas rutas. Debido a su tamaño, `data/PADRON.txt` se almacena con Git LFS; `data/distelec.txt` se almacena directamente en Git.
+Los archivos se versionan dentro del proyecto para que todos los colaboradores utilicen las mismas rutas. `PADRON.txt` se distribuye comprimido como `data/PADRON.zip` y la aplicación lo extrae automáticamente en la primera ejecución. No es necesario instalar Git LFS ni configurar rutas externas.
 
 Análisis real realizado:
 
@@ -76,13 +75,11 @@ También se pueden sobreescribir con propiedades del sistema o variables de ento
 Preparar una clonación nueva:
 
 ```powershell
-git lfs install
 git clone https://github.com/keylor18/Proyecto_Progra.git
 Set-Location Proyecto_Progra
-git lfs pull
 ```
 
-Si el repositorio ya estaba clonado, basta con ejecutar `git lfs install` y `git lfs pull` desde su raíz.
+La primera ejecución crea `data/PADRON.txt` desde `data/PADRON.zip`. Se requieren aproximadamente 450 MB adicionales de espacio libre para el archivo extraído.
 
 Compilar:
 
@@ -174,7 +171,8 @@ Se controlan, entre otros, estos casos:
 
 ```text
 data/
-  PADRON.txt
+  PADRON.zip
+  PADRON.txt (generado automáticamente)
   distelec.txt
 src/
   padron/

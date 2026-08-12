@@ -115,8 +115,11 @@ public class Configuracion {
         candidatos.add(resolverContraDirectorioTrabajo(nombreArchivo));
 
         for (Path candidato : candidatos) {
-            if (Files.exists(candidato) && Files.isRegularFile(candidato)) {
-                return candidato.toAbsolutePath().normalize();
+            Path rutaPreparada = "PADRON.txt".equals(nombreArchivo)
+                    ? PreparadorDatos.asegurarPadron(candidato)
+                    : candidato;
+            if (Files.exists(rutaPreparada) && Files.isRegularFile(rutaPreparada)) {
+                return rutaPreparada.toAbsolutePath().normalize();
             }
         }
 
