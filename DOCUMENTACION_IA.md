@@ -69,3 +69,17 @@ Se ejecutaron `PruebasRepositorioYServicio` y `PruebasIntegracion`, además de u
 
 Modificaciones realizadas:
 Se agregaron `README.md`, `.gitignore`, `config.properties` y este archivo para dejar constancia del trabajo realizado en esta ejecución.
+
+## Interfaz gráfica de consulta
+
+Problema:
+El servidor se podía consultar por HTTP o TCP, pero no contaba con una interfaz gráfica que permitiera a la persona usuaria ingresar la cédula, seleccionar el protocolo y visualizar la información obtenida de una forma sencilla.
+
+Respuesta/Propuesta:
+Se propuso una interfaz gráfica de escritorio con Java Swing. La ventana permite ingresar el número de cédula, validar que no esté vacío y que tenga nueve dígitos, seleccionar HTTP o TCP, ejecutar la consulta, mostrar los datos recibidos, limpiar el formulario y salir de la aplicación.
+
+Parte utilizada:
+Se utilizó la clase `VentanaConsultaPadron` del paquete `padron.presentacion`, junto con `SwingWorker` para ejecutar la comunicación de red sin bloquear la interfaz. La ventana se comunica con `ServidorHTTP` mediante la ruta `/padron/{cedula}` y con `ServidorTCP` mediante el mensaje `GET|cedula`.
+
+Modificaciones utilizadas:
+Se creó `src/padron/presentacion/VentanaConsultaPadron.java`. También se modificó `Main.java` para abrir la ventana después de iniciar los servidores, usando `SwingUtilities.invokeLater`. La interfaz presenta los campos de la respuesta JSON con etiquetas legibles: cédula, nombre, apellidos, código electoral, provincia, cantón y distrito.
