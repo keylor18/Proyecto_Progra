@@ -209,3 +209,22 @@ Ejecutar pruebas automáticas:
 java --class-path "build\classes;build\test-classes" padron.pruebas.PruebasRepositorioYServicio
 java --class-path "build\classes;build\test-classes" padron.pruebas.PruebasIntegracion
 ```
+
+## Interfaz gráfica
+
+Al ejecutar `padron.Main`, la aplicación inicia los servidores HTTP y TCP y abre una ventana de consulta.
+
+La interfaz permite:
+
+- Ingresar un número de cédula.
+- Validar que la cédula no esté vacía y tenga exactamente 9 dígitos.
+- Seleccionar el protocolo de comunicación: HTTP o TCP.
+- Ejecutar la consulta.
+- Visualizar los datos recibidos: nombre, apellidos, código electoral, provincia, cantón y distrito.
+- Limpiar los campos para realizar otra consulta.
+- Salir de la aplicación.
+
+La ventana se conecta localmente a los servidores iniciados por el proyecto:
+
+- HTTP: `http://127.0.0.1:8080/padron/{cedula}`
+- TCP: `127.0.0.1:5000`, usando el formato `GET|{cedula}`.
